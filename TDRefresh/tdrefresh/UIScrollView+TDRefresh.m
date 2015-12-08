@@ -73,14 +73,10 @@
     return YES;
 }
 
--(void)footerStartRefresh
-{
-    
-}
 
 -(void)footerStopRefresh
 {
-    
+    [self.refreshFooter footerStopRefresh];
 }
 
 -(BOOL)isFooterRefreshing

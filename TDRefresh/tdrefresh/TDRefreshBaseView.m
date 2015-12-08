@@ -15,8 +15,8 @@
     self = [super init];
     if (self) {
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        self.backgroundColor = [UIColor blackColor];
         self.state = TDRefreshStateNomal;
+        self.backgroundColor = [UIColor clearColor];
     }
     return self;
 }
@@ -26,13 +26,14 @@
     [super willMoveToSuperview:newSuperview];
     _scrollView = (UIScrollView *)newSuperview;
     [self.scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew| NSKeyValueObservingOptionOld context:nil];
+    [self.scrollView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew| NSKeyValueObservingOptionOld context:nil];
     [self.scrollView.panGestureRecognizer addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionNew| NSKeyValueObservingOptionOld context:nil];
-    
 }
 
 - (void)removeObservers
 {
     [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
+     [self.scrollView removeObserver:self forKeyPath:@"contentSize"];
     [self.scrollView.panGestureRecognizer removeObserver:self forKeyPath:@"state"];
 }
 
@@ -46,6 +47,8 @@
         [self scrollViewContentOffsetDidChange:change];
     } else if ([keyPath isEqualToString:@"state"]) {
         [self scrollViewPanStateDidChange:change];
+    }  else if ([keyPath isEqualToString:@"contentSize"]) {
+        [self scrollViewContentSizeDidChange:change];
     }
 }
 
@@ -58,6 +61,10 @@
     
 }
 
+-(void)scrollViewContentSizeDidChange:(NSDictionary *)change
+{
+    
+}
 
 #pragma mark - setter
 
@@ -68,16 +75,6 @@
     }
     _state = state;
 }
-
-//- (void)drawRect:(CGRect)rect
-//{
-//    [super drawRect:rect];
-//    
-//    if (self.state == TDRefreshStateWillRefresh) {
-//        // 预防view还没显示出来就调用了beginRefreshing
-//        self.state = TDRefreshStateRefreshing;
-//    }
-//}
 
 
 

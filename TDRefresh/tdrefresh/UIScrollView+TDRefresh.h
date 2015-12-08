@@ -24,7 +24,6 @@
 -(BOOL)isHeaderRefreshing;
 
 -(void)footerStopRefresh;
--(void)footerStartRefresh;
 -(BOOL)isFooterRefreshing;
 
 @end

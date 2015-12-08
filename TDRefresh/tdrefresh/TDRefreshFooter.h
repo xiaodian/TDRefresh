@@ -11,6 +11,9 @@ typedef void (^TDRefreshFooterRefreshingBlock)();
 
 @interface TDRefreshFooter : TDRefreshBaseView
 
-@property (nonatomic, strong) TDRefreshFooterRefreshingBlock footBlock;
+@property (nonatomic, copy) TDRefreshFooterRefreshingBlock footBlock;
+
+-(void)footerStopRefresh;
+-(BOOL)isFooterRefreshing;
 
 @end

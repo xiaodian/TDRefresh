@@ -12,6 +12,7 @@
 @interface ViewController ()<UITableViewDataSource,UITableViewDelegate>
 {
     UITableView *t ;
+    NSInteger num;
 }
 @end
 
@@ -21,16 +22,27 @@
     [super viewDidLoad];
     
     t = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-    t.backgroundColor = [UIColor blackColor];
     t.delegate = self;
     t.dataSource = self;
+    t.tableFooterView = [UIView new];
     [self.view addSubview:t];
-
+    num = 5;
     [t addHeaderRefreshBlock:^{
-        [t performSelector:@selector(headerStopRefresh) withObject:nil afterDelay:4.0];
+        num = 5;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
+            [t headerStopRefresh];
+            
+        });
     }];
-
-    [t headerStartRefresh];
+    
+    [t addFooterRefreshBlock:^{
+        num += 5;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [t footerStopRefresh];
+            [t reloadData];
+        });
+    }];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -46,7 +58,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 30;
+    return num;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -54,6 +66,7 @@
     UITableViewCell *cell = [UITableViewCell new];
     cell.backgroundColor = [UIColor whiteColor];
     cell.textLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
+   // cell.backgroundColor = [UIColor lightGrayColor];
     return cell;
 }
 

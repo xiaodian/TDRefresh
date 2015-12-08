@@ -9,15 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "UIView+TDPosition.h"
 
+#define REFRESHHEIGH 60
+
+#define REFRESH_FOOTER_HEIGH 50
+
+
 typedef enum {
-    /** 普通闲置状态 */
     TDRefreshStateNomal = 1,
-    /** 松开就可以进行刷新的状态 */
+    TDRefreshStateWillStop,
     TDRefreshStatePulling,
-    /** 正在刷新中的状态 */
     TDRefreshStateRefreshing,
-    /** 即将刷新的状态 */
     TDRefreshStateWillRefresh,
+    TDRefreshStateRefreshed,
 } TDRefreshState;
 
 @interface TDRefreshBaseView : UIView
@@ -34,6 +37,7 @@ typedef enum {
 
 
 - (void)scrollViewContentOffsetDidChange:(NSDictionary *)change;
+- (void)scrollViewContentSizeDidChange:(NSDictionary *)change;
 - (void)scrollViewPanStateDidChange:(NSDictionary *)change;
 
 

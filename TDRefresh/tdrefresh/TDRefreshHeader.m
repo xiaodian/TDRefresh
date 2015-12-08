@@ -10,11 +10,9 @@
 #import "TDRefreshHeader.h"
 @interface TDRefreshHeader()
 
-@property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
-
 @property (nonatomic, strong) UIImageView *loadIngImageView;
 
-@property (nonatomic, strong) NSMutableArray *images;
+@property (nonatomic, assign) CGFloat progress;
 
 @end
 @implementation TDRefreshHeader
@@ -23,6 +21,7 @@
 {
     self = [super init];
     if (self) {
+
     }
     return self;
 }
@@ -30,64 +29,69 @@
 -(void)willMoveToSuperview:(UIView *)newSuperview
 {
     [super willMoveToSuperview:newSuperview];
-    self.height = 60;
+    self.height = REFRESHHEIGH;
     self.width = newSuperview.width;
     self.positionX = 0;
-    self.positionY = -60;
+    self.positionY = -REFRESHHEIGH;
     [self addSubview:self.loadIngImageView];
+}
+
+-(void)didMoveToSuperview
+{
+    [super didMoveToSuperview];
+    [self.superview sendSubviewToBack:self];
 }
 
 - (void)scrollViewContentOffsetDidChange:(NSDictionary *)change
 {
-    if (self.state == TDRefreshStateRefreshing) return;
+    if (self.scrollView.contentOffset.y > 0) {
+        return ;
+    }
+    if (self.state == TDRefreshStateRefreshing || self.state == TDRefreshStateRefreshed) return;
     self.scrollViewInset = self.scrollView.contentInset;
     self.scrollViewOffset = CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y + self.scrollViewInset.top);
-    CGFloat y = self.scrollViewOffset.y;
-    [self setImageWithY:y];
+    self.progress = -self.scrollViewOffset.y / REFRESHHEIGH;
 }
 
 - (void)scrollViewPanStateDidChange:(NSDictionary *)change
 {
-    if (self.state == TDRefreshStateRefreshing) return;
+    if (self.state == TDRefreshStateRefreshing || self.state == TDRefreshStateRefreshed) return;
+    
     UIGestureRecognizerState panState = [change[@"new"] integerValue];
     CGFloat y = self.scrollViewOffset.y;
-    if (panState == UIGestureRecognizerStateBegan) {
-        
-    } else if (panState == UIGestureRecognizerStateEnded) {
-        if (y < -60) {
+    if (panState == UIGestureRecognizerStateEnded) {
+        if (y < - REFRESHHEIGH) {
             self.state = TDRefreshStateRefreshing;
         }
     }
 }
 
--(void)setImageWithY:(CGFloat)y
-{
-    if (y < -15) {
-        NSInteger index = (NSInteger)((-y)*24/60);
-        if (index >24) {
-            index = 24;
-        }
-        if (index < 0) {
-            index = 0;
-        }
-        self.loadIngImageView.image = self.images[index];
-    }
-}
-
 #pragma mark - seter
+
+-(void)setProgress:(CGFloat)progress
+{
+    self.loadIngImageView.alpha = progress;
+    CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI * 2 * progress);
+    self.loadIngImageView.transform = transform;
+    CGFloat y = -self.scrollViewOffset.y;
+    self.positionY = (y - REFRESHHEIGH) / 2.0 - y;
+}
 
 -(void)setState:(TDRefreshState)state
 {
     [super setState:state];
-    if (state == TDRefreshStateNomal) {
+    if (state == TDRefreshStateRefreshed) {
         [self endRefresh];
-    } else if (state == TDRefreshStateRefreshing) {
+    }else if (state == TDRefreshStateRefreshing) {
         [UIView animateWithDuration:0.25 animations:^{
-            self.scrollView.contentInset = UIEdgeInsetsMake(60 + self.scrollViewInset.top, 0, 0, 0);
-            self.scrollView.contentOffset = CGPointMake(0, -self.scrollViewInset.top - 60);
+            self.scrollView.contentInset = UIEdgeInsetsMake(REFRESHHEIGH + self.scrollViewInset.top, 0, self.scrollViewInset.bottom, 0);
+            self.scrollView.contentOffset = CGPointMake(0, -self.scrollViewInset.top - REFRESHHEIGH);
+            self.positionY = - REFRESHHEIGH;;
         } completion:^(BOOL finished) {
-            [self.loadIngImageView startAnimating];
-            self.headerBlock();
+            [self loadingViewStartAnimation];
+            if (self.headerBlock) {
+                self.headerBlock();
+            }
         }];
     }
 }
@@ -95,49 +99,43 @@
 -(void)endRefresh
 {
     [UIView animateWithDuration:0.2 delay:0.3 options:UIViewAnimationOptionCurveLinear animations:^{
-        self.scrollView.contentInset = UIEdgeInsetsMake(self.scrollViewInset.top, 0, 0, 0);
+        self.scrollView.contentInset = UIEdgeInsetsMake(self.scrollViewInset.top, 0, self.scrollViewInset.bottom, 0);
         self.scrollView.contentOffset = CGPointMake(0, -self.scrollViewInset.top);
+        self.positionY = -REFRESHHEIGH / 2.0;
     } completion:^(BOOL finished) {
-        [self.indicatorView stopAnimating];
-        [self.loadIngImageView stopAnimating];
+        [self loadingViewStopAnimation];
+        self.state = TDRefreshStateNomal;
     }];
 }
-#pragma mark -getter
 
--(UIActivityIndicatorView *)indicatorView
+-(void)loadingViewStartAnimation
 {
-    if (!_indicatorView) {
-        _indicatorView = [[UIActivityIndicatorView alloc] init];
-        _indicatorView.color = [UIColor redColor];
-    }
-    return _indicatorView;
+    self.loadIngImageView.transform = CGAffineTransformMakeRotation(0);
+    CABasicAnimation* rotationAnimation;
+    rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    rotationAnimation.toValue = [NSNumber numberWithFloat: M_PI * 2.0 ];
+    rotationAnimation.duration = 0.6;
+    rotationAnimation.cumulative = YES;
+    rotationAnimation.repeatCount = NSIntegerMax;
+    [self.loadIngImageView.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
 }
+
+-(void)loadingViewStopAnimation
+{
+    [self.loadIngImageView.layer removeAllAnimations];
+}
+
+#pragma mark -getter
 
 -(UIImageView *)loadIngImageView
 {
     if (!_loadIngImageView) {
-        UIImage *image = [UIImage imageNamed:@"mailer1"];
+        UIImage *image = [UIImage imageNamed:@"td_loading"];
         CGSize size = image.size;
         _loadIngImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.width/2 - size.width/2, self.height/2 - size.height / 2, size.width, size.height)];
-        _loadIngImageView.animationImages = self.images;
-        _loadIngImageView.animationDuration = 1.5;
-        _loadIngImageView.animationRepeatCount = NSIntegerMax;
         _loadIngImageView.image = image;
     }
     return _loadIngImageView;
-}
-
--(NSMutableArray *)images
-{
-    if (!_images) {
-        _images = [NSMutableArray array];
-        for (int i = 1; i < 26; i++) {
-            NSString *str = [NSString stringWithFormat:@"mailer%d",i];
-            UIImage *img = [UIImage imageNamed:str];
-            [_images addObject:img];
-        }
-    }
-    return _images;
 }
 
 #pragma mark - rewrite
@@ -145,7 +143,6 @@
 -(void)layoutSubviews
 {
     [super layoutSubviews];
-    self.indicatorView.center = CGPointMake(self.width/2 - _indicatorView.width/2, self.height/2 - _indicatorView.height/2);
 }
 
 - (void)drawRect:(CGRect)rect
@@ -159,7 +156,7 @@
 
 -(void)headerStartRefresh
 {
-    //注释掉得也可以
+    //注释掉的也可以
     if (self.window) {
         self.state = TDRefreshStateRefreshing;
     } else {
@@ -171,10 +168,9 @@
 //    });
 }
 
-
 -(void)headerStopRefresh
 {
-    self.state = TDRefreshStateNomal;
+    self.state = TDRefreshStateRefreshed;
 }
 
 -(BOOL)isHeaderRefreshing

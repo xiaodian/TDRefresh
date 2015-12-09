@@ -20,10 +20,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.view addSubview:[UIView new]];
+//    [self.view addSubview:[UIView new]];
     t = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-    t.positionY = 64;
-    t.height -= 64;
+//    t.positionY = 64;
+//    t.height -= 64;
     t.delegate = self;
     t.dataSource = self;
     t.tableFooterView = [UIView new];

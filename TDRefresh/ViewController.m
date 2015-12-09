@@ -9,7 +9,6 @@
 #import "ViewController.h"
 #import "UIScrollView+TDRefresh.h"
 #import "AAAViewController.h"
-#import "SVPullToRefresh.h"
 @interface ViewController ()<UITableViewDataSource,UITableViewDelegate>
 {
     UITableView *t ;
@@ -46,14 +45,7 @@
             [weakt reloadData];
         });
     }];
-    
-//    [t addInfiniteScrollingWithActionHandler:^{
-//        num += 5;
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [t.infiniteScrollingView stopAnimating];
-//            [t reloadData];
-//        });
-//    }];
+
 }
 
 -(void)viewDidAppear:(BOOL)animated

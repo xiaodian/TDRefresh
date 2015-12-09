@@ -40,24 +40,27 @@
 
 - (void)scrollViewContentOffsetDidChange:(NSDictionary *)change
 {
-    if (self.scrollView.contentOffset.y < 0) return ;
-    if (self.scrollView.contentSize.height <=  0) return ;
+    self.scrollViewInset = self.scrollView.contentInset;
+    if (self.scrollView.contentOffset.y + self.scrollViewInset.top < REFRESH_FOOTER_HEIGH) return ;
     if (self.state == TDRefreshStateRefreshing || self.state == TDRefreshStateRefreshed) return;
-    NSLog(@"contentOffset : %f",self.scrollView.contentOffset.y);
-    NSLog(@"contentSize : %f",self.scrollView.contentSize.height);
     
-    if (self.scrollView.contentOffset.y + self.scrollView.height >= self.scrollView.contentSize.height + REFRESH_FOOTER_HEIGH ) {
-        self.state = TDRefreshStateRefreshing;
+    self.scrollViewOffset = CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y + self.scrollViewInset.top);
+
+    if (self.scrollView.contentSize.height >= self.scrollView.height) {
+        if (self.scrollView.contentOffset.y + self.scrollView.height >= self.scrollView.contentSize.height + REFRESH_FOOTER_HEIGH ) {
+            self.state = TDRefreshStateRefreshing;
+        }
+    } else {
+        if (self.scrollViewOffset.y >= REFRESH_FOOTER_HEIGH) {
+            self.state = TDRefreshStateRefreshing;
+        }
     }
+    
 }
 
 -(void)scrollViewContentSizeDidChange:(NSDictionary *)change
 {
-    if (self.scrollView.contentSize.height < self.scrollView.height) {
-        self.positionY = self.scrollView.height;
-    } else {
-        self.positionY = self.scrollView.contentSize.height;
-    }
+    self.positionY = self.scrollView.contentSize.height;
 }
 
 -(void)setState:(TDRefreshState)state
@@ -89,15 +92,12 @@
     return self.state == TDRefreshStateRefreshing;
 }
 
-
-
 -(UIActivityIndicatorView *)indicator
 {
     if (!_indicator) {
         _indicator =  [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] ;
         _indicator.tintColor = [UIColor redColor];
         _indicator.center = CGPointMake(self.width / 2, self.height / 2);
-        _indicator.hidesWhenStopped = NO;
     }
     return _indicator;
 }

@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "UIScrollView+TDRefresh.h"
 #import "AAAViewController.h"
+#import "SVPullToRefresh.h"
 @interface ViewController ()<UITableViewDataSource,UITableViewDelegate>
 {
     UITableView *t ;
@@ -20,29 +21,39 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    [self.view addSubview:[UIView new]];
     t = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    t.positionY = 64;
+    t.height -= 64;
     t.delegate = self;
     t.dataSource = self;
     t.tableFooterView = [UIView new];
     [self.view addSubview:t];
-    num = 5;
+    num = 25;
+    __weak typeof(t) weakt = t;
     [t addHeaderRefreshBlock:^{
-        num = 5;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            
-            [t headerStopRefresh];
-            
+            num = 5;
+            [weakt headerStopRefresh];
+            [weakt reloadData];
         });
     }];
     
     [t addFooterRefreshBlock:^{
-        num += 5;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [t footerStopRefresh];
-            [t reloadData];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            num += 5;
+            [weakt footerStopRefresh];
+            [weakt reloadData];
         });
     }];
+    
+//    [t addInfiniteScrollingWithActionHandler:^{
+//        num += 5;
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [t.infiniteScrollingView stopAnimating];
+//            [t reloadData];
+//        });
+//    }];
 }
 
 -(void)viewDidAppear:(BOOL)animated

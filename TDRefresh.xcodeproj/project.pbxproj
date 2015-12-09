@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F33EF2B1C17CB7F000D8806 /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F33EF281C17CB7F000D8806 /* UIScrollView+SVInfiniteScrolling.m */; };
+		3F33EF2C1C17CB7F000D8806 /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F33EF2A1C17CB7F000D8806 /* UIScrollView+SVPullToRefresh.m */; };
 		3FC647501BE213FF00A9897F /* image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FC6474F1BE213FF00A9897F /* image.xcassets */; };
 		3FC647531BE2282B00A9897F /* AAAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC647521BE2282B00A9897F /* AAAViewController.m */; };
 		3FC714801BE0A0A60055EAC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC7147F1BE0A0A60055EAC4 /* main.m */; };
@@ -34,6 +36,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3F33EF261C17CB7F000D8806 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
+		3F33EF271C17CB7F000D8806 /* UIScrollView+SVInfiniteScrolling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVInfiniteScrolling.h"; sourceTree = "<group>"; };
+		3F33EF281C17CB7F000D8806 /* UIScrollView+SVInfiniteScrolling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVInfiniteScrolling.m"; sourceTree = "<group>"; };
+		3F33EF291C17CB7F000D8806 /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVPullToRefresh.h"; sourceTree = "<group>"; };
+		3F33EF2A1C17CB7F000D8806 /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVPullToRefresh.m"; sourceTree = "<group>"; };
 		3FC6474F1BE213FF00A9897F /* image.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = image.xcassets; sourceTree = "<group>"; };
 		3FC647511BE2282B00A9897F /* AAAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAAViewController.h; sourceTree = "<group>"; };
 		3FC647521BE2282B00A9897F /* AAAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAAViewController.m; sourceTree = "<group>"; };
@@ -80,6 +87,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3F33EF251C17CB7F000D8806 /* SVPullToRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				3F33EF261C17CB7F000D8806 /* SVPullToRefresh.h */,
+				3F33EF271C17CB7F000D8806 /* UIScrollView+SVInfiniteScrolling.h */,
+				3F33EF281C17CB7F000D8806 /* UIScrollView+SVInfiniteScrolling.m */,
+				3F33EF291C17CB7F000D8806 /* UIScrollView+SVPullToRefresh.h */,
+				3F33EF2A1C17CB7F000D8806 /* UIScrollView+SVPullToRefresh.m */,
+			);
+			path = SVPullToRefresh;
+			sourceTree = "<group>";
+		};
 		3FC714711BE0A0A60055EAC4 = {
 			isa = PBXGroup;
 			children = (
@@ -101,6 +120,7 @@
 		3FC7147C1BE0A0A60055EAC4 /* TDRefresh */ = {
 			isa = PBXGroup;
 			children = (
+				3F33EF251C17CB7F000D8806 /* SVPullToRefresh */,
 				3FC714A31BE0A0E30055EAC4 /* tdrefresh */,
 				3FC714811BE0A0A60055EAC4 /* AppDelegate.h */,
 				3FC714821BE0A0A60055EAC4 /* AppDelegate.m */,
@@ -263,9 +283,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FC714861BE0A0A60055EAC4 /* ViewController.m in Sources */,
+				3F33EF2C1C17CB7F000D8806 /* UIScrollView+SVPullToRefresh.m in Sources */,
 				3FC647531BE2282B00A9897F /* AAAViewController.m in Sources */,
 				3FC714831BE0A0A60055EAC4 /* AppDelegate.m in Sources */,
 				3FC714AF1BE0A4540055EAC4 /* TDRefreshFooter.m in Sources */,
+				3F33EF2B1C17CB7F000D8806 /* UIScrollView+SVInfiniteScrolling.m in Sources */,
 				3FC714B51BE0B5480055EAC4 /* TDRefreshBaseView.m in Sources */,
 				3FC714B21BE0A4A40055EAC4 /* UIScrollView+TDRefresh.m in Sources */,
 				3FC714801BE0A0A60055EAC4 /* main.m in Sources */,

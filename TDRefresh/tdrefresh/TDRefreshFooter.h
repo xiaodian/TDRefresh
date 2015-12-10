@@ -14,6 +14,5 @@ typedef void (^TDRefreshFooterRefreshingBlock)();
 @property (nonatomic, copy) TDRefreshFooterRefreshingBlock footBlock;
 
 -(void)footerStopRefresh;
--(BOOL)isFooterRefreshing;
 
 @end

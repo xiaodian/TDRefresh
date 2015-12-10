@@ -40,6 +40,7 @@
 
 - (void)scrollViewContentOffsetDidChange:(NSDictionary *)change
 {
+    [super scrollViewContentOffsetDidChange:change];
     self.scrollViewInset = self.scrollView.contentInset;
     if (self.scrollView.contentOffset.y + self.scrollViewInset.top < REFRESH_FOOTER_HEIGH) return ;
     if (self.state == TDRefreshStateRefreshing || self.state == TDRefreshStateRefreshed) return;
@@ -52,14 +53,15 @@
         }
     } else {
         if (self.scrollViewOffset.y >= REFRESH_FOOTER_HEIGH) {
+            if (!self.window) return;
             self.state = TDRefreshStateRefreshing;
         }
     }
-    
 }
 
 -(void)scrollViewContentSizeDidChange:(NSDictionary *)change
 {
+    [super scrollViewContentOffsetDidChange:change];
     self.positionY = self.scrollView.contentSize.height;
 }
 
@@ -87,11 +89,6 @@
     self.state = TDRefreshStateNomal;
 }
 
--(BOOL)isFooterRefreshing
-{
-    return self.state == TDRefreshStateRefreshing;
-}
-
 -(UIActivityIndicatorView *)indicator
 {
     if (!_indicator) {
@@ -100,11 +97,6 @@
         _indicator.center = CGPointMake(self.width / 2, self.height / 2);
     }
     return _indicator;
-}
-
--(void)layoutSubviews
-{
-    [super layoutSubviews];
 }
 
 @end

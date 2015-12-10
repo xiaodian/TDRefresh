@@ -20,15 +20,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-//    [self.view addSubview:[UIView new]];
+   // [self.view addSubview:[UIView new]];
     t = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-//    t.positionY = 64;
-//    t.height -= 64;
+   // t.positionY = 64;
+   // t.height -= 64;
     t.delegate = self;
     t.dataSource = self;
     t.tableFooterView = [UIView new];
     [self.view addSubview:t];
-    num = 25;
+    num = 5;
     __weak typeof(t) weakt = t;
     [t addHeaderRefreshBlock:^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -51,8 +51,23 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    if (self.view.window) {
+        NSLog(@"有啊");
+    } else {
+        NSLog(@"没有");
+    }
+
 }
 
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    if (self.view.window) {
+        NSLog(@"有啊");
+    } else {
+        NSLog(@"没有");
+    }
+}
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {

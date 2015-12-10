@@ -47,7 +47,13 @@
     if (self.scrollView.contentOffset.y > 0) {
         return ;
     }
-    if (self.state == TDRefreshStateRefreshing || self.state == TDRefreshStateRefreshed) return;
+    if (self.state == TDRefreshStateRefreshing) {
+        if (![self.loadIngImageView isAnimating]) {
+            [self loadingViewStartAnimation];
+        }
+        return ;
+    }
+    if (self.state == TDRefreshStateRefreshed) return;
     self.scrollViewInset = self.scrollView.contentInset;
     self.scrollViewOffset = CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y + self.scrollViewInset.top);
     self.progress = -self.scrollViewOffset.y / REFRESHHEIGH;
@@ -105,6 +111,12 @@
     } completion:^(BOOL finished) {
         [self loadingViewStopAnimation];
         self.state = TDRefreshStateNomal;
+        if (!self.window) {
+            UIEdgeInsets inset = self.scrollView.contentInset;
+            inset.top = 0;
+            self.scrollView.contentInset = inset;
+        }
+
     }];
 }
 

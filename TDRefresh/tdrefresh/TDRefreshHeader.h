@@ -14,6 +14,5 @@ typedef void (^TDRefreshHeaderRefreshingBlock)();
 
 -(void)headerStopRefresh;
 -(void)headerStartRefresh;
--(BOOL)isHeaderRefreshing;
 
 @end
